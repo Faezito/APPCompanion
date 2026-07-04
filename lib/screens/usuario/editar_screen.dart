@@ -1,11 +1,14 @@
+import 'package:appcompanion/models/requests/usuario_att_request.dart';
 import 'package:appcompanion/models/responses/usuario_response.dart';
 import 'package:appcompanion/services/usuario_service.dart';
+import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
 import 'package:flutter/material.dart';
 
 class EditarUsuarioScreen extends StatefulWidget {
    final int usuarioId;
+    final IUsuarioService usuarioService;
 
-   const EditarUsuarioScreen({super.key, required this.usuarioId});
+   const EditarUsuarioScreen({super.key, required this.usuarioId, required this.usuarioService});
 
    @override
    State<EditarUsuarioScreen> createState() => _EditarUsuarioScreenState();
@@ -13,7 +16,6 @@ class EditarUsuarioScreen extends StatefulWidget {
 
  class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
     final _formKey = GlobalKey<FormState>();
-    
     final _emailController = TextEditingController();
 
     bool carregando = true;
@@ -27,7 +29,7 @@ class EditarUsuarioScreen extends StatefulWidget {
     }
 
     Future<void> carregarUsuario() async {
-      usuario = await UsuarioService().obterPorId(widget.usuarioId);
+      usuario = await widget.usuarioService.obterPorId(widget.usuarioId);
       _emailController.text = usuario.email;
 
       setState(() {
@@ -74,18 +76,16 @@ class EditarUsuarioScreen extends StatefulWidget {
   Future<void> salvar() async {
     if (_formKey.currentState!.validate()) {
       try {
-        await UsuarioService().atualizarUsuario(
-          id: usuario.id,
-          email: _emailController.text
+        await widget.usuarioService.atualizarUsuario(
+          usuarioEdicaoRequest: UsuarioAtualizacaoRequest(
+            id: usuario.id,
+            email: _emailController.text
+          )
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Usuário atualizado com sucesso!')),
-        );
+        SnackbarService.snackSucesso('Usuário atualizado com sucesso!');
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao atualizar usuário: $e')),
-        );
+        SnackbarService.snackErro('Erro ao atualizar usuário: $e');
       }
     }
   }

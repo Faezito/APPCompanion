@@ -1,10 +1,13 @@
+import 'package:appcompanion/models/requests/usuario_att_senha_request.dart';
 import 'package:appcompanion/services/usuario_service.dart';
+import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
 import 'package:flutter/material.dart';
 
 class AlterarSenhaScreen extends StatefulWidget {
    final int usuarioId;
+   final IUsuarioService usuarioService;
 
-   const AlterarSenhaScreen({super.key, required this.usuarioId});
+   const AlterarSenhaScreen({super.key, required this.usuarioId, required this.usuarioService});
 
    @override
    State<AlterarSenhaScreen> createState() => _AlterarSenhaScreenState();
@@ -58,20 +61,15 @@ class AlterarSenhaScreen extends StatefulWidget {
       setState(() => carregando = true);
 
       try {
-        await UsuarioService().atualizarSenha(
-          usuarioId: widget.usuarioId,
-          novaSenha: _novaSenhaController.text,
-          senhaAtual: _senhaAtualController.text,
-        );
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Senha alterada com sucesso!")),
-        );
+          await widget.usuarioService.atualizarSenha(usuarioAtualizacaoSenhaRequest:  UsuarioAtualizacaoSenhaRequest(
+            usuarioId: widget.usuarioId,
+            novaSenha: _novaSenhaController.text,
+            senhaAtual: _senhaAtualController.text,
+          ));
+          
+          SnackbarService.snackSucesso("Senha alterada com sucesso!");
       } catch (e) {
-        print("Erro ao alterar senha: $e");
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Erro ao alterar senha.", style: TextStyle(color: Colors.red))),
-        );
+          SnackbarService.snackErro("Erro ao alterar senha.");
       } finally {
         setState(() {
           carregando = false;

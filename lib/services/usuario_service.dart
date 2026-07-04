@@ -1,11 +1,24 @@
 import 'package:appcompanion/api/api_client.dart';
+import 'package:appcompanion/models/requests/usuario_att_request.dart';
 import 'package:appcompanion/models/requests/usuario_att_senha_request.dart';
 import 'package:appcompanion/models/requests/usuario_cadastro.dart';
 import 'package:appcompanion/models/responses/usuario_response.dart';
 import 'package:dio/dio.dart';
 
-class UsuarioService {
-  Future<UsuarioResponse> obterPorId(int id) async {
+abstract class IUsuarioService 
+{
+  Future<UsuarioResponse> obterPorId(int id);
+  Future<void> cadastrarUsuario({required UsuarioCadastro usuarioCadastro});
+  Future<void> atualizarUsuario({required UsuarioAtualizacaoRequest usuarioEdicaoRequest});
+  Future<void> atualizarSenha({required UsuarioAtualizacaoSenhaRequest usuarioAtualizacaoSenhaRequest});
+  Future<List<UsuarioResponse>> listarUsuarios();
+  Future<void> excluirUsuario(int id);
+}
+
+class UsuarioService implements IUsuarioService {
+  @override
+  Future<UsuarioResponse> obterPorId(int id) async 
+  {
     try{
       Response res = await ApiClient.dio.get(
         '/api/usuario/$id'
@@ -17,79 +30,47 @@ class UsuarioService {
     }
   }
 
-  Future<void> cadastrarUsuario({
-    required String nomeCompleto,
-    required String nomeUsuario,
-    required String email,
-    required String senha,
-    required String genero,
-    required DateTime dataNascimento,
-  }) async {
+  @override
+  Future<void> cadastrarUsuario({required UsuarioCadastro usuarioCadastro}) async 
+  {
     try {
-      final usuarioCadastro = UsuarioCadastro(
-        nomeCompleto: nomeCompleto,
-        nomeUsuario: nomeUsuario,
-        senha: senha,
-        email: email,
-        genero: genero,
-        dataNascimento: dataNascimento,
-      ); 
-
-      print('UsuarioCadastro: ${usuarioCadastro.toJson()}');
-      Response res = await ApiClient.dio.post(
+      await ApiClient.dio.post(
         '/api/usuario/cadastro',
         data: usuarioCadastro.toJson(),
-      );
+        );
     } on DioException {
       rethrow;
     }
   }
 
-  Future<void> atualizarUsuario({
-    required int id,
-    required String email
-  }) async {
+  @override
+  Future<void> atualizarUsuario({required UsuarioAtualizacaoRequest usuarioEdicaoRequest}) async {
     try {
-      final usuarioAtualizado = {
-        'id': id,
-        'email': email
-      };
-
-      String endpoint = '/api/usuario/atualizar-usuario';
-
-      Response res = await ApiClient.dio.put(
-        endpoint,
-        data: usuarioAtualizado,
-      );
+        await ApiClient.dio.put(
+          '/api/usuario/atualizar-usuario',
+          data: usuarioEdicaoRequest.toJson(),
+          );
     } on DioException {
       rethrow;
     }
   }
 
-  Future<void> atualizarSenha({
-    required int usuarioId,
-    required String novaSenha,
-    required String senhaAtual
-  }) async {
+  @override
+  Future<void> atualizarSenha({ required UsuarioAtualizacaoSenhaRequest usuarioAtualizacaoSenhaRequest }) async
+  {
     try {
-      final usuarioAtualizado = UsuarioAtualizacaoSenhaRequest(
-        usuarioId: usuarioId,
-        novaSenha: novaSenha,
-        senhaAtual: senhaAtual
-      );
-
-      String endpoint = '/api/usuario/atualizar-senha';
-      print('UsuarioAtualizacaoSenhaRequest: ${usuarioAtualizado.toString()}');
-      Response res = await ApiClient.dio.put(
-        endpoint,
-        data: usuarioAtualizado.toJson(),
-      );
+        await ApiClient.dio.put(
+          '/api/usuario/atualizar-senha',
+          data: usuarioAtualizacaoSenhaRequest.toJson(),
+        );
     } on DioException {
       rethrow;
     }
   }
 
-  Future<List<UsuarioResponse>> listarUsuarios() async {
+  @override
+  Future<List<UsuarioResponse>> listarUsuarios() async 
+  {
     try {
       Response res = await ApiClient.dio.get(
         '/api/usuario/listar'
@@ -97,6 +78,17 @@ class UsuarioService {
 
       List<dynamic> data = res.data;
       return data.map((json) => UsuarioResponse.fromJson(json)).toList();
+    } on DioException {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> excluirUsuario(int id) async {
+    try {
+        await ApiClient.dio.delete(
+          '/api/usuario/excluir/$id',
+        );
     } on DioException {
       rethrow;
     }

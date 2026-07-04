@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => const ListaUsuariosScreen(),
+                      builder: (_) => ListaUsuariosScreen(usuarioService: usuarioService),
                     ),
                   );
                 },

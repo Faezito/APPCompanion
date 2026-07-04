@@ -1,4 +1,6 @@
+import 'package:appcompanion/models/requests/usuario_cadastro.dart';
 import 'package:appcompanion/services/usuario_service.dart';
+import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
 import 'package:flutter/material.dart';
 
 class CadastroScreen extends StatefulWidget {
@@ -29,17 +31,16 @@ class CadastroScreen extends StatefulWidget {
        });
 
        try {
-          await _usuarioService.cadastrarUsuario(
+          await _usuarioService.cadastrarUsuario(usuarioCadastro: UsuarioCadastro(
             nomeCompleto: _nomeCompletoController.text,
             nomeUsuario: _nomeUsuarioController.text,
             email: _emailController.text,
             senha: _senhaController.text,
             genero: _generoSelecionado!,
             dataNascimento: _dataNascimento ?? DateTime.now(),
-          );
-         ScaffoldMessenger.of(context).showSnackBar(
-           const SnackBar(content: Text('Usuário cadastrado com sucesso!')),
-         );
+          ));
+
+         SnackbarService.snackSucesso('Usuário cadastrado com sucesso!');
 
           _nomeCompletoController.clear();
           _nomeUsuarioController.clear();
@@ -48,10 +49,9 @@ class CadastroScreen extends StatefulWidget {
           setState(() => _generoSelecionado = null);
          _dataNascimento = null;
 
+         Navigator.pop(context, true); // Retorna true para indicar que o usuário foi cadastrado com sucesso
        } catch (e) {
-         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text('Erro ao cadastrar usuário: $e')),
-         );
+         SnackbarService.snackErro('Erro ao cadastrar usuário: $e');
        } finally {
          setState(() {
            carregando = false;
@@ -104,6 +104,7 @@ class CadastroScreen extends StatefulWidget {
                     initialDate: DateTime.now(),
                     firstDate: DateTime(1900),
                     lastDate: DateTime.now(),
+                    initialEntryMode: DatePickerEntryMode.input,
                   );
                   if (dataSelecionada != null) {
                     setState(() {
@@ -117,6 +118,7 @@ class CadastroScreen extends StatefulWidget {
                 decoration: const InputDecoration(labelText: 'Senha'),
                 validator: (value)  =>
                 value!.isEmpty ? "Informe a senha" : null,
+                obscureText: true,
               ),
               const SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
