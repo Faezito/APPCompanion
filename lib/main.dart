@@ -1,8 +1,10 @@
-import 'package:appcompanion/screens/home.dart';
+import 'package:appcompanion/api/api_client.dart';
+import 'package:appcompanion/screens/auth/splash_screen.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart' as snackbar_service;
 import 'package:flutter/material.dart';
 
 void main() {
+  ApiClient.init();
   runApp(const MyApp());
 }
 
@@ -15,7 +17,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: snackbar_service.scaffoldMessengerKey,
-      home: HomePage(title: 'Pagina Inicial'),
+      home: SplashScreen(),
+      title: "Game Companion",
     );
   }
 }
