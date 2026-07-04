@@ -1,9 +1,5 @@
-import 'package:appcompanion/models/responses/usuario_response.dart';
 import 'package:appcompanion/screens/home.dart';
-import 'package:appcompanion/screens/usuario/alterar_senha_screen.dart';
-import 'package:appcompanion/screens/usuario/cadastro_screen.dart';
-import 'package:appcompanion/screens/usuario/editar_screen.dart';
-import 'package:appcompanion/services/usuario_service.dart';
+import 'package:appcompanion/widgets/snackbar/snackbar_service.dart' as snackbar_service;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,9 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: const AlterarSenhaScreen(usuarioId: 1),
-      // home: const EditarUsuarioScreen(usuarioId: 1),
-      // home: const CadastroScreen(),
+      scaffoldMessengerKey: snackbar_service.scaffoldMessengerKey,
       home: HomePage(title: 'Pagina Inicial'),
     );
   }
