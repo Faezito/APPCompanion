@@ -1,3 +1,4 @@
+import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/usuario_att_request.dart';
 import 'package:appcompanion/models/responses/usuario_response.dart';
 import 'package:appcompanion/services/usuario_service.dart';
@@ -6,9 +7,8 @@ import 'package:flutter/material.dart';
 
 class EditarUsuarioScreen extends StatefulWidget {
    final int usuarioId;
-    final IUsuarioService usuarioService;
 
-   const EditarUsuarioScreen({super.key, required this.usuarioId, required this.usuarioService});
+   const EditarUsuarioScreen({super.key, required this.usuarioId});
 
    @override
    State<EditarUsuarioScreen> createState() => _EditarUsuarioScreenState();
@@ -17,6 +17,8 @@ class EditarUsuarioScreen extends StatefulWidget {
  class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
     final _formKey = GlobalKey<FormState>();
     final _emailController = TextEditingController();
+
+    final usuarioService = getIt<IUsuarioService>();
 
     bool carregando = true;
 
@@ -29,7 +31,7 @@ class EditarUsuarioScreen extends StatefulWidget {
     }
 
     Future<void> carregarUsuario() async {
-      usuario = await widget.usuarioService.obterPorId(widget.usuarioId);
+      usuario = await usuarioService.obterPorId(widget.usuarioId);
       _emailController.text = usuario.email;
 
       setState(() {
@@ -76,7 +78,7 @@ class EditarUsuarioScreen extends StatefulWidget {
   Future<void> salvar() async {
     if (_formKey.currentState!.validate()) {
       try {
-        await widget.usuarioService.atualizarUsuario(
+        await usuarioService.atualizarUsuario(
           usuarioEdicaoRequest: UsuarioAtualizacaoRequest(
             id: usuario.id,
             email: _emailController.text

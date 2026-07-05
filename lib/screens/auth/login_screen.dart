@@ -1,9 +1,9 @@
+import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/login.dart';
 import 'package:appcompanion/screens/usuario/cadastro_screen.dart';
 import 'package:appcompanion/screens/usuario/lista_usuarios.dart';
 import 'package:appcompanion/services/acesso_service.dart';
 import 'package:appcompanion/services/auth_service.dart';
-import 'package:appcompanion/services/usuario_service.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -16,8 +16,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final IAcessoService _acessoService = getIt<IAcessoService>();
+
   final _formKey = GlobalKey<FormState>();
-  final AcessoService acessoService = AcessoService();
   final _loginController = TextEditingController();
   final _senhaController = TextEditingController();
   final storage = FlutterSecureStorage();
@@ -119,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
     try {
-        final acesso = await acessoService.login(LoginRequest(login: _loginController.text, senha: _senhaController.text));
+        final acesso = await _acessoService.login(LoginRequest(login: _loginController.text, senha: _senhaController.text));
         AuthService.salvarSessao(token: acesso.token, expiration: acesso.expiration ?? DateTime.now().add(Duration(hours: 3)));
         SnackbarService.snackSucesso("Logado com sucesso! Bem-vindo de volta ${acesso.usuario?.nomeCompleto}");
 
@@ -128,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => ListaUsuariosScreen(usuarioService: UsuarioService()),
+            builder: (_) => ListaUsuariosScreen(),
           ),
         );
       }

@@ -1,3 +1,4 @@
+import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/usuario_cadastro.dart';
 import 'package:appcompanion/services/usuario_service.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
@@ -20,7 +21,7 @@ class CadastroScreen extends StatefulWidget {
    String? _generoSelecionado;
    DateTime? _dataNascimento;
 
-   final UsuarioService _usuarioService = UsuarioService();
+   final IUsuarioService _usuarioService = getIt<UsuarioService>();
 
    bool carregando = false;
 

@@ -1,3 +1,4 @@
+import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/login.dart';
 import 'package:appcompanion/screens/usuario/cadastro_screen.dart';
 import 'package:appcompanion/services/acesso_service.dart';
@@ -17,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _formKey = GlobalKey<FormState>();
-  final AcessoService acessoService = AcessoService();
+  final IAcessoService acessoService = getIt<AcessoService>();
   final _loginController = TextEditingController();
   final _senhaController = TextEditingController();
   final storage = FlutterSecureStorage();

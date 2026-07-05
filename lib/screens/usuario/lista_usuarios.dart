@@ -1,4 +1,5 @@
-  import 'package:appcompanion/models/responses/usuario_response.dart';
+  import 'package:appcompanion/core/di/service_locator.dart';
+import 'package:appcompanion/models/responses/usuario_response.dart';
   import 'package:appcompanion/screens/usuario/alterar_senha_screen.dart';
   import 'package:appcompanion/screens/usuario/cadastro_screen.dart';
   import 'package:appcompanion/screens/usuario/editar_screen.dart';
@@ -7,9 +8,8 @@
   import 'package:flutter/material.dart';
 
   class ListaUsuariosScreen extends StatefulWidget {
-    final IUsuarioService usuarioService;
 
-    const ListaUsuariosScreen({super.key, required this.usuarioService});
+    const ListaUsuariosScreen({super.key});
 
     @override
     State<ListaUsuariosScreen> createState() => _ListaUsuariosScreenState();
@@ -17,11 +17,12 @@
 
   class _ListaUsuariosScreenState extends State<ListaUsuariosScreen> {
     late Future<List<UsuarioResponse>> usuariosFuture;
+    final IUsuarioService _usuarioService = getIt<IUsuarioService>();
 
     @override
     void initState() {
       super.initState();
-      usuariosFuture = widget.usuarioService.listarUsuarios();
+      usuariosFuture = _usuarioService.listarUsuarios();
     }
 
     @override
@@ -44,7 +45,7 @@
                 if(res == true)
                 {
                   setState(() {
-                    usuariosFuture = widget.usuarioService.listarUsuarios();
+                    usuariosFuture = _usuarioService.listarUsuarios();
                   });
                 }
               },
@@ -54,7 +55,7 @@
               tooltip: "Atualizar lista de usuários",
               onPressed: () {
                 setState(() {
-                  usuariosFuture = widget.usuarioService.listarUsuarios();
+                  usuariosFuture = _usuarioService.listarUsuarios();
                 });
               },
             ),
@@ -90,7 +91,7 @@
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => EditarUsuarioScreen(usuarioId: usuario.id, usuarioService: widget.usuarioService),
+                                builder: (_) => EditarUsuarioScreen(usuarioId: usuario.id),
                               ),
                             );
                           },
@@ -103,7 +104,7 @@
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => AlterarSenhaScreen(usuarioId: usuario.id, usuarioService: widget.usuarioService),
+                                builder: (_) => AlterarSenhaScreen(usuarioId: usuario.id),
                               ),
                             );
                           },
@@ -122,9 +123,9 @@
 
                             if (confirmou == true) 
                             {
-                              await widget.usuarioService.excluirUsuario(usuario.id);
+                              await _usuarioService.excluirUsuario(usuario.id);
                               setState(() {
-                                usuariosFuture = widget.usuarioService.listarUsuarios();
+                                usuariosFuture = _usuarioService.listarUsuarios();
                               });
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text("Usuário excluído com sucesso!")),

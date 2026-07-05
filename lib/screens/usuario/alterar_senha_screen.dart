@@ -1,3 +1,4 @@
+import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/usuario_att_senha_request.dart';
 import 'package:appcompanion/services/usuario_service.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
@@ -5,9 +6,8 @@ import 'package:flutter/material.dart';
 
 class AlterarSenhaScreen extends StatefulWidget {
    final int usuarioId;
-   final IUsuarioService usuarioService;
 
-   const AlterarSenhaScreen({super.key, required this.usuarioId, required this.usuarioService});
+   const AlterarSenhaScreen({super.key, required this.usuarioId});
 
    @override
    State<AlterarSenhaScreen> createState() => _AlterarSenhaScreenState();
@@ -17,6 +17,8 @@ class AlterarSenhaScreen extends StatefulWidget {
     final _formKey = GlobalKey<FormState>();
     final _novaSenhaController = TextEditingController();
     final _senhaAtualController = TextEditingController();
+
+   final IUsuarioService usuarioService = getIt<IUsuarioService>();
 
     bool carregando = false;
 
@@ -61,7 +63,7 @@ class AlterarSenhaScreen extends StatefulWidget {
       setState(() => carregando = true);
 
       try {
-          await widget.usuarioService.atualizarSenha(usuarioAtualizacaoSenhaRequest:  UsuarioAtualizacaoSenhaRequest(
+          await usuarioService.atualizarSenha(usuarioAtualizacaoSenhaRequest:  UsuarioAtualizacaoSenhaRequest(
             usuarioId: widget.usuarioId,
             novaSenha: _novaSenhaController.text,
             senhaAtual: _senhaAtualController.text,
