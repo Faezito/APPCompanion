@@ -18,22 +18,56 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context){
     final auth = getIt<IAuthService>();
     return AppBar(
+      backgroundColor: const Color.fromARGB(130, 129, 168, 235),
       title: Text(titulo),
       actions: [
             ...?actions,
-            IconButton(
-              icon: const Icon(Icons.exit_to_app),
-              tooltip: "Sair",
-              onPressed: () async {
-               await auth.logout();
-               if(!context.mounted) return;
+             PopupMenuButton<String>(
+                icon: const Icon(Icons.account_circle),
+                onSelected: (value) async {
+                  switch (value) {
+                    case "perfil":
+                      // abrir perfil
+                      break;
 
-               Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-                (route) => false
-               );
-              }
-            )
+                    case "config":
+                      // abrir configurações
+                      break;
+
+                    case "logout":
+                      await auth.logout();
+                      if(!context.mounted) return;
+
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                        (route) => false
+                      );                      
+                      break;
+                  }
+                },
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: "perfil",
+                    child: Text("Meu Perfil"),
+                  ),
+                  const PopupMenuItem(
+                    value: "config",
+                    child: Text("Configurações"),
+                  ),
+                  const PopupMenuDivider(),
+                  const PopupMenuItem(
+                    value: "logout",
+                    child: Row(
+                      children: [
+                        Icon(Icons.exit_to_app),
+                        SizedBox(width: 8),
+                        Text("Sair"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
       ],
     );
   }
