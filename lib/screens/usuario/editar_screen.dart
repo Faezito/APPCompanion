@@ -3,6 +3,7 @@ import 'package:appcompanion/models/requests/usuario_att_request.dart';
 import 'package:appcompanion/models/responses/usuario_response.dart';
 import 'package:appcompanion/services/auth_service.dart';
 import 'package:appcompanion/services/usuario_service.dart';
+import 'package:appcompanion/widgets/base/appbar.dart';
 import 'package:appcompanion/widgets/dropdowns/perfil_dropdown.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +20,10 @@ class EditarUsuarioScreen extends StatefulWidget {
  class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
     final _formKey = GlobalKey<FormState>();
     final _emailController = TextEditingController();
-    final _auth = getIt<IAuthService>();
-
     int? _perfilSelecionado = 5;
 
     final usuarioService = getIt<IUsuarioService>();
+    final _auth = getIt<IAuthService>();
 
     bool carregando = true;
 
@@ -53,41 +53,90 @@ class EditarUsuarioScreen extends StatefulWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Editar Usuário")),
+      appBar: BaseAppBar(titulo: "Editar Usuário", actions: [],),
       body: 
       Center(
         child: FractionallySizedBox(
           widthFactor: 0.75,
+
           child: Form(
             key: _formKey,
-            child: Row(
-              children: [
-                Expanded(child:   
-                Text("Usuário: ${usuario.nomeUsuario} - ${_auth.isAdmin ? "1" : "2"}"),
-                ),
+            child:  LayoutBuilder(
+              
+              builder: (context, constraints) {
+                if(constraints.maxWidth < 600){
+                  return Column(children: [
+                      Text(usuario.nomeCompleto, style: TextStyle(fontSize: 24)),
 
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: "Email"),
-                ),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(labelText: "Email"),
+                        ),
 
-                const SizedBox(height: 20),
-                if(_auth.isAdmin)
-                  PerfilDropdown(
-                    value: _perfilSelecionado, 
-                      onChanged: (value) {
-                              setState(() {
-                                _perfilSelecionado = value;
-                              });
-                        }
+                    const SizedBox(height: 15),
+
+                    if(_auth.isAdmin)
+                          PerfilDropdown(
+                            value: _perfilSelecionado, 
+                              onChanged: (value) {
+                                      setState(() {
+                                        _perfilSelecionado = value;
+                                      });
+                                }
+                            ),
+
+                    const SizedBox(height: 30),
+
+                    ElevatedButton(
+                      onPressed: salvar,
+                      child: const Text("Salvar"),
+                        ),
+                      ],
+                    );
+                  }
+              else{
+                return Row(
+                  children: [
+                    Expanded(
+                    child:   
+                    Text("Usuário: ${usuario.nomeUsuario} - ${_auth.isAdmin ? "1" : "2"}"),
+                  ),
+
+                    const SizedBox(width: 20,),
+
+                    Expanded(
+                      child: 
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(labelText: "Email"),
+                        ),
                     ),
-                ElevatedButton(
-                  onPressed: salvar,
-                  child: const Text("Salvar"),
-                ),
-              ],
-            ),
-          )
+
+                    const SizedBox(width: 20),
+
+                    if(_auth.isAdmin)
+                    Expanded(
+                        child: 
+                          PerfilDropdown(
+                            value: _perfilSelecionado, 
+                              onChanged: (value) {
+                                      setState(() {
+                                        _perfilSelecionado = value;
+                                      });
+                                }
+                            ),
+                        ),
+
+                    ElevatedButton(
+                      onPressed: salvar,
+                      child: const Text("Salvar"),
+                    ),
+                  ],
+                );
+              }
+            }
+          ),
+         ),
         ),
       ),
     );

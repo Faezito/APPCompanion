@@ -1,11 +1,11 @@
   import 'package:appcompanion/core/di/service_locator.dart';
-import 'package:appcompanion/models/responses/usuario_response.dart';
-import 'package:appcompanion/screens/auth/login_screen.dart';
+  import 'package:appcompanion/models/responses/usuario_response.dart';
   import 'package:appcompanion/screens/usuario/alterar_senha_screen.dart';
   import 'package:appcompanion/screens/usuario/cadastro_screen.dart';
   import 'package:appcompanion/screens/usuario/editar_screen.dart';
-import 'package:appcompanion/services/auth_service.dart';
+  import 'package:appcompanion/services/auth_service.dart';
   import 'package:appcompanion/services/usuario_service.dart';
+  import 'package:appcompanion/widgets/base/appbar.dart';
   import 'package:appcompanion/widgets/dialogs/delete_confirm_dialog.dart';
   import 'package:flutter/material.dart';
 
@@ -31,8 +31,8 @@ import 'package:appcompanion/services/auth_service.dart';
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text("Usuários - ${_auth.usuario?.nomeCompleto ?? ''}"), 
+        appBar: BaseAppBar(
+          titulo: "Usuários", 
           actions: [
             IconButton(
               icon: const Icon(Icons.add),
@@ -63,41 +63,31 @@ import 'package:appcompanion/services/auth_service.dart';
                 });
               },
             ),
-            
-            IconButton(
-              icon: const Icon(Icons.exit_to_app),
-              tooltip: "Sair",
-              onPressed: () async {
-               await _auth.logout();
-               if(!mounted) return;
+          ]
+        ),
+        body: 
+        Center(
+          child: FractionallySizedBox(
+            widthFactor: 0.7,
+            child: 
+              FutureBuilder<List<UsuarioResponse>>(
+                future: usuariosFuture,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-               Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-                (route) => false
-               );
-              }
-            )
-            ]
-          ),
-        body: FutureBuilder<List<UsuarioResponse>>(
-          future: usuariosFuture,
-          builder: (context, snapshot) {
+                  final usuarios = snapshot.data!;
 
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
+                  return ListView.builder(
+                    itemCount: usuarios.length,
+                    itemBuilder: (context, index) {
+                      final usuario = usuarios[index];
 
-            final usuarios = snapshot.data!;
-
-            return ListView.builder(
-              itemCount: usuarios.length,
-              itemBuilder: (context, index) {
-                final usuario = usuarios[index];
-
-                return Card(
-                  child: ListTile(
-                    title: Text(usuario.nomeUsuario),
-                    subtitle: Text(usuario.email),
+                  return Card(
+                    child: ListTile(
+                      title: Text(usuario.nomeUsuario),
+                      subtitle: Text(usuario.email),
 
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -115,6 +105,7 @@ import 'package:appcompanion/services/auth_service.dart';
                           },
                         ),
 
+                        if(_auth.usuario?.id == usuario.id)
                         IconButton(
                           icon: const Icon(Icons.lock),
                           tooltip: "Alterar senha",
@@ -128,6 +119,7 @@ import 'package:appcompanion/services/auth_service.dart';
                           },
                         ),
 
+                        if(_auth.isAdmin)
                         IconButton(
                           icon: const Icon(Icons.delete),
                           tooltip: "Excluir usuário",
@@ -154,12 +146,13 @@ import 'package:appcompanion/services/auth_service.dart';
                       ],
                     ),
                   ),
-                );
-              },
-            );
-          },
-        ),
-      );
-    }
-
+                  );
+               },
+             );
+            },
+          )
+        )
+      ),
+    );
   }
+}

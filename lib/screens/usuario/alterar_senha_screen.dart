@@ -1,6 +1,7 @@
 import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/usuario_att_senha_request.dart';
 import 'package:appcompanion/services/usuario_service.dart';
+import 'package:appcompanion/widgets/base/appbar.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
 import 'package:flutter/material.dart';
 
@@ -25,8 +26,11 @@ class AlterarSenhaScreen extends StatefulWidget {
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        appBar: AppBar(title: const Text("Alterar Senha")),
-        body: Padding(
+      appBar: BaseAppBar(
+        titulo: 'Alterar senha',
+        actions: [],
+      ),        
+      body: Padding(
           padding: const EdgeInsets.all(16),
           child: Form(
             key: _formKey,
@@ -71,7 +75,7 @@ class AlterarSenhaScreen extends StatefulWidget {
           
           SnackbarService.snackSucesso("Senha alterada com sucesso!");
       } catch (e) {
-          SnackbarService.snackErro("Erro ao alterar senha.");
+          SnackbarService.snackErro("Erro ao alterar senha: ${e.toString().replaceFirst("Exception: ", "")}");
       } finally {
         setState(() {
           carregando = false;

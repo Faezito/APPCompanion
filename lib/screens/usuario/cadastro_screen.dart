@@ -2,6 +2,7 @@ import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/usuario_cadastro.dart';
 import 'package:appcompanion/services/auth_service.dart';
 import 'package:appcompanion/services/usuario_service.dart';
+import 'package:appcompanion/widgets/base/appbar.dart';
 import 'package:appcompanion/widgets/dropdowns/perfil_dropdown.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +74,9 @@ class CadastroScreen extends StatefulWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cadastro de Usuário'),
+      appBar: BaseAppBar(
+        titulo: 'Cadastro de Usuário',
+        actions: [],
       ),
       body: 
       Center(

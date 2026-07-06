@@ -16,7 +16,7 @@ class SnackbarService {
         // persist: true,
         showCloseIcon: true,
         closeIconColor: Color.fromARGB(255, 92, 6, 0),
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 10),
       ),
     );
   }
@@ -30,7 +30,7 @@ class SnackbarService {
           ),
         // persist: true,
         showCloseIcon: true,
-        duration: const Duration(seconds: 20),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -46,7 +46,7 @@ class SnackbarService {
         // persist: true,
         showCloseIcon: true,
         closeIconColor: Color.fromARGB(255, 127, 127, 253),
-        duration: const Duration(seconds: 20),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -62,7 +62,7 @@ class SnackbarService {
         // persist: true,
         showCloseIcon: true,
         closeIconColor: Color.fromARGB(255, 250, 250, 184),
-        duration: const Duration(seconds: 20),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
