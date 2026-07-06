@@ -10,7 +10,7 @@ void main() async {
   setupDependencies();
 
   final auth = getIt<IAuthService>();
-
+  ApiClient.init();
   await auth.restaurarSessao();
   runApp(const MyApp());
 }

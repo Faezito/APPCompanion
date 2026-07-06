@@ -7,7 +7,7 @@ class AuthGuard {
   final _auth = getIt<IAuthService>();
 
   Future<void> validate(BuildContext context) async {
-    final isLogged = await _auth.isLoggedIn();
+    final isLogged = _auth.isLoggedIn();
 
     if (!isLogged && context.mounted) {
       Navigator.pushAndRemoveUntil(
