@@ -1,4 +1,5 @@
 import 'package:appcompanion/api/api_client.dart';
+import 'package:appcompanion/exceptions/app_exception.dart';
 import 'package:appcompanion/models/requests/usuario_att_request.dart';
 import 'package:appcompanion/models/requests/usuario_att_senha_request.dart';
 import 'package:appcompanion/models/requests/usuario_cadastro.dart';
@@ -25,8 +26,8 @@ class UsuarioService implements IUsuarioService {
       );
 
         return UsuarioResponse.fromJson(res.data);
-    } on DioException {
-      rethrow;
+    } on DioException catch (e) {
+        throw AppException(e.response?.data["detail"] ?? "Erro inesperado.");
     }
   }
 
@@ -38,8 +39,8 @@ class UsuarioService implements IUsuarioService {
         '/api/usuario/cadastro',
         data: usuarioCadastro.toJson(),
         );
-    } on DioException {
-      rethrow;
+    } on DioException catch (e) {
+        throw AppException(e.response?.data["detail"] ?? "Erro inesperado.");
     }
   }
 
@@ -50,8 +51,8 @@ class UsuarioService implements IUsuarioService {
           '/api/usuario/atualizar-usuario',
           data: usuarioEdicaoRequest.toJson(),
           );
-    } on DioException {
-      rethrow;
+    } on DioException catch (e) {
+        throw AppException(e.response?.data["detail"] ?? "Erro inesperado.");
     }
   }
 
@@ -63,8 +64,8 @@ class UsuarioService implements IUsuarioService {
           '/api/usuario/atualizar-senha',
           data: usuarioAtualizacaoSenhaRequest.toJson(),
         );
-    } on DioException {
-      rethrow;
+    } on DioException catch (e) {
+        throw AppException(e.response?.data["detail"] ?? "Erro inesperado.");
     }
   }
 
@@ -78,8 +79,8 @@ class UsuarioService implements IUsuarioService {
 
       List<dynamic> data = res.data;
       return data.map((json) => UsuarioResponse.fromJson(json)).toList();
-    } on DioException {
-      rethrow;
+    } on DioException catch (e) {
+        throw AppException(e.response?.data["detail"] ?? "Erro inesperado.");
     }
   }
 
@@ -89,8 +90,8 @@ class UsuarioService implements IUsuarioService {
         await ApiClient.dio.delete(
           '/api/usuario/excluir/$id',
         );
-    } on DioException {
-      rethrow;
+    } on DioException catch (e) {
+        throw AppException(e.response?.data["detail"] ?? "Erro inesperado.");
     }
   }
 }
