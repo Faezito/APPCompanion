@@ -1,12 +1,17 @@
 import 'package:appcompanion/api/api_client.dart';
 import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/screens/auth/splash_screen.dart';
+import 'package:appcompanion/services/auth_service.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart' as snackbar_service;
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   setupDependencies();
-  ApiClient.init();
+
+  final auth = getIt<IAuthService>();
+
+  await auth.restaurarSessao();
   runApp(const MyApp());
 }
 

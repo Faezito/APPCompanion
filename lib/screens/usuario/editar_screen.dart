@@ -19,7 +19,8 @@ class EditarUsuarioScreen extends StatefulWidget {
  class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
     final _formKey = GlobalKey<FormState>();
     final _emailController = TextEditingController();
-    bool _isAdmin = false;
+    final _auth = getIt<IAuthService>();
+
     int? _perfilSelecionado = 5;
 
     final usuarioService = getIt<IUsuarioService>();
@@ -32,7 +33,6 @@ class EditarUsuarioScreen extends StatefulWidget {
     void initState() {
       super.initState();
       _carregarUsuario();
-      _carregarPermissoes();
     }
 
     Future<void> _carregarUsuario() async {
@@ -54,35 +54,40 @@ class EditarUsuarioScreen extends StatefulWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Editar Usuário")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Text("Usuário: ${usuario.nomeUsuario}"),
+      body: 
+      Center(
+        child: FractionallySizedBox(
+          widthFactor: 0.75,
+          child: Form(
+            key: _formKey,
+            child: Row(
+              children: [
+                Expanded(child:   
+                Text("Usuário: ${usuario.nomeUsuario} - ${_auth.isAdmin ? "1" : "2"}"),
+                ),
 
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: "Email"),
-              ),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: "Email"),
+                ),
 
-              const SizedBox(height: 20),
-              if(_isAdmin)
-                PerfilDropdown(
-                  value: _perfilSelecionado, 
-                    onChanged: (value) {
-                            setState(() {
-                              _perfilSelecionado = value;
-                            });
-                      }
-                  ),
-              ElevatedButton(
-                onPressed: salvar,
-                child: const Text("Salvar"),
-              ),
-            ],
-          ),
+                const SizedBox(height: 20),
+                if(_auth.isAdmin)
+                  PerfilDropdown(
+                    value: _perfilSelecionado, 
+                      onChanged: (value) {
+                              setState(() {
+                                _perfilSelecionado = value;
+                              });
+                        }
+                    ),
+                ElevatedButton(
+                  onPressed: salvar,
+                  child: const Text("Salvar"),
+                ),
+              ],
+            ),
+          )
         ),
       ),
     );
@@ -104,10 +109,4 @@ class EditarUsuarioScreen extends StatefulWidget {
       }
     }
   }
-  
-   Future<void> _carregarPermissoes() async {
-      _isAdmin = await AuthService.isAdmin();
-      if(!mounted) return;
-      setState(() { });
-   }
 }

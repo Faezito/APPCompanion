@@ -1,7 +1,9 @@
+import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:dio/dio.dart';
 import '../services/auth_service.dart';
 
 class AuthInterceptor extends Interceptor {
+  final _auth = getIt<IAuthService>();
 
   @override
   void onRequest(
@@ -9,7 +11,7 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
 
-    final token = await AuthService.getToken();
+    final token = _auth.obterToken;
 
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';

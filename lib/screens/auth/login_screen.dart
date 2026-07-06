@@ -17,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final IAcessoService _acessoService = getIt<IAcessoService>();
+  final _auth = getIt<IAuthService>();
 
   final _formKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
@@ -121,10 +122,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
         final acesso = await _acessoService.login(LoginRequest(login: _loginController.text, senha: _senhaController.text));
-        AuthService.salvarSessao(
+        _auth.salvarSessao(
             token: acesso.token, 
             expiration: acesso.expiration ?? DateTime.now().add(Duration(hours: 3)),
-            perfil: acesso.usuario!.perfil
+            perfil: acesso.usuario!.perfil,
+            usuario: acesso.usuario!
           );
         SnackbarService.snackSucesso("Logado com sucesso! Bem-vindo de volta ${acesso.usuario?.nomeCompleto}");
 

@@ -1,3 +1,4 @@
+import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/screens/auth/login_screen.dart';
 import 'package:appcompanion/screens/usuario/lista_usuarios.dart';
 import 'package:flutter/material.dart';
@@ -11,15 +12,18 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final _auth = getIt<IAuthService>();
 
   @override
   void initState() {
     super.initState();
-    _checkLogin();
+    WidgetsBinding.instance.addPostFrameCallback((_) => {
+      _checkLogin()
+    });
   }
 
   Future<void> _checkLogin() async {
-    final isLogged = await AuthService.isLoggedIn();
+    final isLogged = _auth.isLoggedIn();
 
     if (!mounted) return;
 

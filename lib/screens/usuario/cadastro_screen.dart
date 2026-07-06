@@ -15,13 +15,11 @@ class CadastroScreen extends StatefulWidget {
  
  class _CadastroScreenState extends State<CadastroScreen> {
    final _formKey = GlobalKey<FormState>();
-   bool _isAdmin = false;
    int? _perfilSelecionado = 5;
 
    @override
    void initState(){
     super.initState();
-    _carregarPermissoes();
    }
 
    final TextEditingController _nomeCompletoController = TextEditingController();
@@ -32,14 +30,9 @@ class CadastroScreen extends StatefulWidget {
    DateTime? _dataNascimento;
 
    final _usuarioService = getIt<IUsuarioService>();
+   final _auth = getIt<IAuthService>();
 
    bool carregando = false;
-
-   Future<void> _carregarPermissoes() async {
-      _isAdmin = await AuthService.isAdmin();
-      if(!mounted) return;
-      setState(() { });
-   }
 
    Future<void> _cadastrarUsuario() async {
      if (_formKey.currentState!.validate()) {
@@ -83,30 +76,53 @@ class CadastroScreen extends StatefulWidget {
       appBar: AppBar(
         title: const Text('Cadastro de Usuário'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: 
+      Center(
+        child: FractionallySizedBox(
+        widthFactor: 0.75,
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
+
               TextFormField(
                 controller: _nomeCompletoController,
                 decoration: const InputDecoration(labelText: 'Nome Completo'),
                 validator: (value)  =>
                 value!.isEmpty ? "Informe o nome completo" : null,
               ),
-              TextFormField(
-                controller: _nomeUsuarioController,
-                decoration: const InputDecoration(labelText: 'Nome de Usuário'),
-                validator: (value)  =>
-                value!.isEmpty ? "Informe o nome completo" : null,
+              const SizedBox(height: 16,),
+              Row(
+              children: [
+                Expanded(
+                  child:
+                    TextFormField(
+                      controller: _nomeUsuarioController,
+                      decoration: const InputDecoration(labelText: 'Nome de Usuário'),
+                      validator: (value)  =>
+                      value!.isEmpty ? "Informe o nome completo" : null,
+                    )),
+
+                const SizedBox(width: 16,),
+
+                Expanded(
+                  child: 
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(labelText: 'Email'),
+                      validator: (value)  =>
+                      value!.isEmpty ? "Informe o email" : null,
+                    ),              
+                )
+                ]
               ),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value)  =>
-                value!.isEmpty ? "Informe o email" : null,
-              ),              
+
+              const SizedBox(height: 16,),
+
+              Row(
+                children: [
+                  Expanded(
+                    child:
               TextFormField(
                 readOnly: true,
                 decoration: InputDecoration(
@@ -130,14 +146,11 @@ class CadastroScreen extends StatefulWidget {
                   }
                 },
               ),
-              TextFormField(
-                controller: _senhaController,
-                decoration: const InputDecoration(labelText: 'Senha'),
-                validator: (value)  =>
-                value!.isEmpty ? "Informe a senha" : null,
-                obscureText: true,
-              ),
-              const SizedBox(height: 16.0),
+                  ),
+                  SizedBox(width: 16,),
+                  
+                  Expanded(
+                    child:
               DropdownButtonFormField<String>(
                 initialValue: _generoSelecionado,
                 decoration: const InputDecoration(labelText: 'Gênero'),
@@ -154,8 +167,30 @@ class CadastroScreen extends StatefulWidget {
                 validator: (value)  =>
                 value == null ? "Informe o gênero" : null,
               ),
-              if(_isAdmin)
-                PerfilDropdown(
+                  )
+            ]),
+
+              const SizedBox(height: 16,),
+
+              Row(
+                children: [
+                  Expanded(
+                    child:
+                      TextFormField(
+                controller: _senhaController,
+                decoration: const InputDecoration(labelText: 'Senha'),
+                validator: (value)  =>
+                value!.isEmpty ? "Informe a senha" : null,
+                obscureText: true,
+              ),
+                  ),
+
+                const SizedBox(width: 16.0),
+
+                if(_auth.isAdmin)
+                  Expanded(
+                    child:
+                      PerfilDropdown(
                   value: _perfilSelecionado, 
                     onChanged: (value) {
                             setState(() {
@@ -163,7 +198,11 @@ class CadastroScreen extends StatefulWidget {
                             });
                       }
                   ),
-              const SizedBox(height: 16.0),
+                  ),
+            ]),
+
+
+              const SizedBox(height: 48.0),
               ElevatedButton(
                 onPressed: carregando ? null : _cadastrarUsuario,
                 child: carregando
@@ -174,6 +213,7 @@ class CadastroScreen extends StatefulWidget {
           ),
         ),
       ),
+      )
     );
   }
 }

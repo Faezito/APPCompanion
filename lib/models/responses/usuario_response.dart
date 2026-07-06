@@ -36,4 +36,16 @@ UsuarioResponse({
       perfil: json['perfil'], 
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "nomeCompleto": nomeCompleto,
+      "nomeUsuario": nomeUsuario,
+      "email": email,
+      "genero": generoTxt,
+      "dataNascimento": dataNascimento.toIso8601String(),
+      "perfil": perfil,
+    };
+  }
 }

@@ -18,7 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _formKey = GlobalKey<FormState>();
-  final IAcessoService acessoService = getIt<AcessoService>();
+  final acessoService = getIt<IAcessoService>();
+  final _auth = getIt<IAuthService>();
   final _loginController = TextEditingController();
   final _senhaController = TextEditingController();
   final storage = FlutterSecureStorage();
@@ -126,10 +127,11 @@ class _HomePageState extends State<HomePage> {
 
     try {
         final acesso = await acessoService.login(LoginRequest(login: _loginController.text, senha: _senhaController.text));
-        AuthService.salvarSessao(
+        _auth.salvarSessao(
           token: acesso.token, 
           expiration: acesso.expiration ?? DateTime.now().add(Duration(hours: 3)),
-          perfil: acesso.usuario!.perfil
+          perfil: acesso.usuario!.perfil,
+          usuario: acesso.usuario!
           );
         SnackbarService.snackSucesso("Logado com sucesso! Bem-vindo de volta ${acesso.usuario?.nomeCompleto}");
       }

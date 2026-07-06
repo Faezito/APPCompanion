@@ -1,8 +1,10 @@
   import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/responses/usuario_response.dart';
+import 'package:appcompanion/screens/auth/login_screen.dart';
   import 'package:appcompanion/screens/usuario/alterar_senha_screen.dart';
   import 'package:appcompanion/screens/usuario/cadastro_screen.dart';
   import 'package:appcompanion/screens/usuario/editar_screen.dart';
+import 'package:appcompanion/services/auth_service.dart';
   import 'package:appcompanion/services/usuario_service.dart';
   import 'package:appcompanion/widgets/dialogs/delete_confirm_dialog.dart';
   import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ import 'package:appcompanion/models/responses/usuario_response.dart';
   class _ListaUsuariosScreenState extends State<ListaUsuariosScreen> {
     late Future<List<UsuarioResponse>> usuariosFuture;
     final IUsuarioService _usuarioService = getIt<IUsuarioService>();
+    final IAuthService _auth = getIt<IAuthService>();
 
     @override
     void initState() {
@@ -29,7 +32,7 @@ import 'package:appcompanion/models/responses/usuario_response.dart';
     Widget build(BuildContext context) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Usuários"), 
+          title: Text("Usuários - ${_auth.usuario?.nomeCompleto ?? ''}"), 
           actions: [
             IconButton(
               icon: const Icon(Icons.add),
@@ -50,6 +53,7 @@ import 'package:appcompanion/models/responses/usuario_response.dart';
                 }
               },
             ),
+
             IconButton(
               icon: const Icon(Icons.refresh),
               tooltip: "Atualizar lista de usuários",
@@ -59,7 +63,21 @@ import 'package:appcompanion/models/responses/usuario_response.dart';
                 });
               },
             ),
-          ]
+            
+            IconButton(
+              icon: const Icon(Icons.exit_to_app),
+              tooltip: "Sair",
+              onPressed: () async {
+               await _auth.logout();
+               if(!mounted) return;
+
+               Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+                (route) => false
+               );
+              }
+            )
+            ]
           ),
         body: FutureBuilder<List<UsuarioResponse>>(
           future: usuariosFuture,
@@ -143,4 +161,5 @@ import 'package:appcompanion/models/responses/usuario_response.dart';
         ),
       );
     }
+
   }
