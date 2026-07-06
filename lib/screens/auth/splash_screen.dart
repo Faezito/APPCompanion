@@ -1,5 +1,6 @@
 import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/screens/auth/login_screen.dart';
+import 'package:appcompanion/screens/home.dart';
 import 'package:appcompanion/screens/usuario/lista_usuarios.dart';
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
@@ -30,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (isLogged) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => ListaUsuariosScreen())
+        MaterialPageRoute(builder: (_) => HomePage(title: "Tela inicial"))
         );
     } else {
       Navigator.pushReplacement(
