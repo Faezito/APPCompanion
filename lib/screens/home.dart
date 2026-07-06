@@ -1,28 +1,22 @@
 import 'package:appcompanion/core/di/service_locator.dart';
-import 'package:appcompanion/models/requests/login.dart';
-import 'package:appcompanion/screens/usuario/cadastro_screen.dart';
-import 'package:appcompanion/services/acesso_service.dart';
+import 'package:appcompanion/screens/menus/menu_configuracoes.dart';
+import 'package:appcompanion/screens/usuario/lista_usuarios.dart';
 import 'package:appcompanion/services/auth_service.dart';
-import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
+import 'package:appcompanion/widgets/base/appbar.dart';
+import 'package:appcompanion/widgets/botoes/menu_buttons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+  const HomePage({super.key, this.title});
 
-  final String title;
+  final String? title;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final _formKey = GlobalKey<FormState>();
-  final acessoService = getIt<IAcessoService>();
   final _auth = getIt<IAuthService>();
-  final _loginController = TextEditingController();
-  final _senhaController = TextEditingController();
-  final storage = FlutterSecureStorage();
 
   bool carregando = false;
 
@@ -34,117 +28,42 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: BaseAppBar(
+        titulo: "Home",
+        actions: [
+        ],
+      ),
       body: 
-      Center(
-        child: SizedBox(
-          width: 320,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Game Companion",
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 1, 38, 86),
-                    fontSize: 24.0
-                    ),
-                  strutStyle: const StrutStyle(
-                    height: 5.0
-                  ),
+      Container(
+        padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+        child:  
+          Align(
+            alignment: Alignment.topCenter,
+            child: 
+              FractionallySizedBox(
+                widthFactor: 0.85,
+                child: Wrap(  // equivalente ao flexbox
+                  spacing: 16, // espaço entre itens
+                  runSpacing: 16, 
+                  alignment: WrapAlignment.spaceAround,// espaço entrelinhas
+                  children: [
+                    MenuButton(icon: Icons.gamepad, title: "Dead by Daylight", onTap: () => _configuracoes()), 
+                    MenuButton(icon: Icons.catching_pokemon, title: "Pokémon Champions", onTap: () => _configuracoes()), 
+                    MenuButton(icon: Icons.settings, title: "Configurações", onTap: () => _configuracoes()), 
+                  ],
                 ),
-                TextFormField(
-                  controller: _loginController,
-                  decoration: const InputDecoration(labelText: "E-mail ou usuário"),
-                  autofocus: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira seu e-mail ou usuário';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _senhaController,
-                  decoration: const InputDecoration(labelText: "Senha"),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira sua senha';
-                    }
-                    return null;
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsetsGeometry.all(16.0),
-                  child: Row (
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 25.0,
-                    children: [
-                      ElevatedButton(
-                        onPressed: carregando ? null : _login,
-                        child: carregando ? const CircularProgressIndicator() : const Text("Entrar"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => CadastroScreen(),
-                            ),
-                          );
-                        },
-                        child: const Text("Cadastrar"),
-                      ),
-                    ],
-                  ),
-                ),
-                ElevatedButton(
-                      onPressed: () {
-                        // Navigator.of(context).push(
-                        //   // MaterialPageRoute(
-                        //   //   builder: (_) => RecuperarSenhaScreen(usuarioService: usuarioService),
-                        //   // ),
-                        // );
-                      },
-                  child: const Text("Recuperar Senha"),
-                ),
-              ],
-            ),
-          )
+              )
+            )
         )
-      )
-    );
+      );
   }
 
-  Future<void> _login() async {
-    if (!_formKey.currentState!.validate()){
-      return;
-    }
-
-    setState(() {
-      carregando = true;
-      });
-
-    try {
-        final acesso = await acessoService.login(LoginRequest(login: _loginController.text, senha: _senhaController.text));
-        _auth.salvarSessao(
-          token: acesso.token, 
-          expiration: acesso.expiration ?? DateTime.now().add(Duration(hours: 3)),
-          perfil: acesso.usuario!.perfil,
-          usuario: acesso.usuario!
-          );
-        SnackbarService.snackSucesso("Logado com sucesso! Bem-vindo de volta ${acesso.usuario?.nomeCompleto}");
-      }
-      catch(ex){
-        SnackbarService.snackErro(ex.toString().replaceFirst("Exception: ", ""));
-      }
-      finally{
-        if(mounted){
-          setState(() {
-            carregando = false;
-          });
-        }
-      }
-    }
-
+  void _configuracoes() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ConfigMenu(),
+      ),
+    );
+  }
 }
