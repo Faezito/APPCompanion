@@ -121,7 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
         final acesso = await _acessoService.login(LoginRequest(login: _loginController.text, senha: _senhaController.text));
-        AuthService.salvarSessao(token: acesso.token, expiration: acesso.expiration ?? DateTime.now().add(Duration(hours: 3)));
+        AuthService.salvarSessao(
+            token: acesso.token, 
+            expiration: acesso.expiration ?? DateTime.now().add(Duration(hours: 3)),
+            perfil: acesso.usuario!.perfil
+          );
         SnackbarService.snackSucesso("Logado com sucesso! Bem-vindo de volta ${acesso.usuario?.nomeCompleto}");
 
         if (!mounted) return;

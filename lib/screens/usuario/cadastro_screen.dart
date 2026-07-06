@@ -1,6 +1,8 @@
 import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/usuario_cadastro.dart';
+import 'package:appcompanion/services/auth_service.dart';
 import 'package:appcompanion/services/usuario_service.dart';
+import 'package:appcompanion/widgets/dropdowns/perfil_dropdown.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +15,14 @@ class CadastroScreen extends StatefulWidget {
  
  class _CadastroScreenState extends State<CadastroScreen> {
    final _formKey = GlobalKey<FormState>();
+   bool _isAdmin = false;
+   int? _perfilSelecionado = 5;
+
+   @override
+   void initState(){
+    super.initState();
+    _carregarPermissoes();
+   }
 
    final TextEditingController _nomeCompletoController = TextEditingController();
    final TextEditingController _nomeUsuarioController = TextEditingController();
@@ -21,9 +31,15 @@ class CadastroScreen extends StatefulWidget {
    String? _generoSelecionado;
    DateTime? _dataNascimento;
 
-   final IUsuarioService _usuarioService = getIt<UsuarioService>();
+   final _usuarioService = getIt<IUsuarioService>();
 
    bool carregando = false;
+
+   Future<void> _carregarPermissoes() async {
+      _isAdmin = await AuthService.isAdmin();
+      if(!mounted) return;
+      setState(() { });
+   }
 
    Future<void> _cadastrarUsuario() async {
      if (_formKey.currentState!.validate()) {
@@ -138,6 +154,15 @@ class CadastroScreen extends StatefulWidget {
                 validator: (value)  =>
                 value == null ? "Informe o gênero" : null,
               ),
+              if(_isAdmin)
+                PerfilDropdown(
+                  value: _perfilSelecionado, 
+                    onChanged: (value) {
+                            setState(() {
+                              _perfilSelecionado = value;
+                            });
+                      }
+                  ),
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: carregando ? null : _cadastrarUsuario,

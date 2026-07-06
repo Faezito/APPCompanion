@@ -126,7 +126,11 @@ class _HomePageState extends State<HomePage> {
 
     try {
         final acesso = await acessoService.login(LoginRequest(login: _loginController.text, senha: _senhaController.text));
-        AuthService.salvarSessao(token: acesso.token, expiration: acesso.expiration ?? DateTime.now().add(Duration(hours: 3)));
+        AuthService.salvarSessao(
+          token: acesso.token, 
+          expiration: acesso.expiration ?? DateTime.now().add(Duration(hours: 3)),
+          perfil: acesso.usuario!.perfil
+          );
         SnackbarService.snackSucesso("Logado com sucesso! Bem-vindo de volta ${acesso.usuario?.nomeCompleto}");
       }
       catch(ex){

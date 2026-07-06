@@ -5,6 +5,7 @@ final String email;
 final String genero;
 final DateTime dataNascimento;
 final String senha;
+final int? perfil;
 
 UsuarioCadastro({
   required this.nomeCompleto, 
@@ -12,7 +13,8 @@ UsuarioCadastro({
   required this.email, 
   required this.genero,
   required this.dataNascimento,
-  required this.senha
+  required this.senha, 
+  this.perfil = 5
 });
 
   Map<String, dynamic> toJson() {
@@ -23,11 +25,12 @@ UsuarioCadastro({
       'genero': genero,
       'dataNascimento': dataNascimento.toIso8601String(),
       'senha': senha,
+      'perfil': perfil
     };
   }
 
   @override
   String toString() {
-    return 'UsuarioCadastro(nomeCompleto: $nomeCompleto, nomeUsuario: $nomeUsuario, email: $email, genero: $genero, dataNascimento: $dataNascimento, senha: $senha)';
+    return 'UsuarioCadastro(nomeCompleto: $nomeCompleto, nomeUsuario: $nomeUsuario, email: $email, genero: $genero, dataNascimento: $dataNascimento, senha: $senha, perfil: $perfil)';
   }
 }

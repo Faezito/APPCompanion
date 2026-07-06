@@ -1,7 +1,9 @@
 import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/usuario_att_request.dart';
 import 'package:appcompanion/models/responses/usuario_response.dart';
+import 'package:appcompanion/services/auth_service.dart';
 import 'package:appcompanion/services/usuario_service.dart';
+import 'package:appcompanion/widgets/dropdowns/perfil_dropdown.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +19,8 @@ class EditarUsuarioScreen extends StatefulWidget {
  class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
     final _formKey = GlobalKey<FormState>();
     final _emailController = TextEditingController();
+    bool _isAdmin = false;
+    int? _perfilSelecionado = 5;
 
     final usuarioService = getIt<IUsuarioService>();
 
@@ -27,10 +31,11 @@ class EditarUsuarioScreen extends StatefulWidget {
     @override
     void initState() {
       super.initState();
-      carregarUsuario();
+      _carregarUsuario();
+      _carregarPermissoes();
     }
 
-    Future<void> carregarUsuario() async {
+    Future<void> _carregarUsuario() async {
       usuario = await usuarioService.obterPorId(widget.usuarioId);
       _emailController.text = usuario.email;
 
@@ -63,7 +68,15 @@ class EditarUsuarioScreen extends StatefulWidget {
               ),
 
               const SizedBox(height: 20),
-
+              if(_isAdmin)
+                PerfilDropdown(
+                  value: _perfilSelecionado, 
+                    onChanged: (value) {
+                            setState(() {
+                              _perfilSelecionado = value;
+                            });
+                      }
+                  ),
               ElevatedButton(
                 onPressed: salvar,
                 child: const Text("Salvar"),
@@ -91,4 +104,10 @@ class EditarUsuarioScreen extends StatefulWidget {
       }
     }
   }
+  
+   Future<void> _carregarPermissoes() async {
+      _isAdmin = await AuthService.isAdmin();
+      if(!mounted) return;
+      setState(() { });
+   }
 }

@@ -5,6 +5,7 @@ final String nomeUsuario;
 final String email;
 final String generoTxt;
 final DateTime dataNascimento;
+final int perfil;
 
 UsuarioResponse({
   required this.id, 
@@ -12,8 +13,17 @@ UsuarioResponse({
   required this.nomeUsuario, 
   required this.email, 
   required this.generoTxt,
-  required this.dataNascimento
+  required this.dataNascimento, 
+  required this.perfil
   });
+
+  String get perfilTxt => switch (perfil){
+    1 => "Admin",
+    5 => "Usuario",
+    _ => "Desconhecido"
+  };
+
+  bool get isAdmin => perfil == 1;
 
   factory UsuarioResponse.fromJson(Map<String, dynamic> json) {
     return UsuarioResponse(
@@ -22,7 +32,8 @@ UsuarioResponse({
       nomeUsuario: json['nomeUsuario'],
       email: json['email'],
       generoTxt: json['genero'],
-      dataNascimento: DateTime.parse(json['dataNascimento']),
+      dataNascimento: DateTime.parse(json['dataNascimento']), 
+      perfil: json['perfil'], 
     );
   }
 }
