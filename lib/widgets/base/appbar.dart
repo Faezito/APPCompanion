@@ -1,5 +1,6 @@
 import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/screens/auth/login_screen.dart';
+import 'package:appcompanion/screens/menus/menu_configuracoes.dart';
 import 'package:appcompanion/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +32,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
                       break;
 
                     case "config":
-                      // abrir configurações
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ConfigMenu()));
                       break;
 
                     case "logout":
@@ -50,6 +51,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
                     value: "perfil",
                     child: Text("Meu Perfil"),
                   ),
+                  if(auth.isAdmin)
                   const PopupMenuItem(
                     value: "config",
                     child: Text("Configurações"),

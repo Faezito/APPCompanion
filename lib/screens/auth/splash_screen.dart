@@ -1,7 +1,6 @@
 import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/screens/auth/login_screen.dart';
 import 'package:appcompanion/screens/home.dart';
-import 'package:appcompanion/screens/usuario/lista_usuarios.dart';
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 

@@ -2,7 +2,6 @@ import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/models/requests/login.dart';
 import 'package:appcompanion/screens/home.dart';
 import 'package:appcompanion/screens/usuario/cadastro_screen.dart';
-import 'package:appcompanion/screens/usuario/lista_usuarios.dart';
 import 'package:appcompanion/services/acesso_service.dart';
 import 'package:appcompanion/services/auth_service.dart';
 import 'package:appcompanion/widgets/snackbar/snackbar_service.dart';

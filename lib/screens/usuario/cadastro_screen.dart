@@ -23,10 +23,10 @@ class CadastroScreen extends StatefulWidget {
     super.initState();
    }
 
-   final TextEditingController _nomeCompletoController = TextEditingController();
-   final TextEditingController _nomeUsuarioController = TextEditingController();
-   final TextEditingController _emailController = TextEditingController();
-   final TextEditingController _senhaController = TextEditingController();
+   final _nomeCompletoController = TextEditingController();
+   final _nomeUsuarioController = TextEditingController();
+   final _emailController = TextEditingController();
+   final _senhaController = TextEditingController();
    String? _generoSelecionado;
    DateTime? _dataNascimento;
 
@@ -153,22 +153,22 @@ class CadastroScreen extends StatefulWidget {
                   
                   Expanded(
                     child:
-              DropdownButtonFormField<String>(
-                initialValue: _generoSelecionado,
-                decoration: const InputDecoration(labelText: 'Gênero'),
-                items: const [
-                  DropdownMenuItem(value: 'M', child: Text('Masculino')),
-                  DropdownMenuItem(value: 'F', child: Text('Feminino')),
-                  DropdownMenuItem(value: 'O', child: Text('Outro')),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _generoSelecionado = value;
-                  });
-                },
-                validator: (value)  =>
-                value == null ? "Informe o gênero" : null,
-              ),
+                      DropdownButtonFormField<String>(
+                        initialValue: _generoSelecionado,
+                        decoration: const InputDecoration(labelText: 'Gênero'),
+                        items: const [
+                          DropdownMenuItem(value: 'M', child: Text('Masculino')),
+                          DropdownMenuItem(value: 'F', child: Text('Feminino')),
+                          DropdownMenuItem(value: 'O', child: Text('Outro')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _generoSelecionado = value;
+                          });
+                        },
+                        validator: (value)  =>
+                        value == null ? "Informe o gênero" : null,
+                      ),
                   )
             ]),
 
@@ -179,42 +179,42 @@ class CadastroScreen extends StatefulWidget {
                   Expanded(
                     child:
                       TextFormField(
-                controller: _senhaController,
-                decoration: const InputDecoration(labelText: 'Senha'),
-                validator: (value)  =>
-                value!.isEmpty ? "Informe a senha" : null,
-                obscureText: true,
-              ),
+                        controller: _senhaController,
+                        decoration: const InputDecoration(labelText: 'Senha'),
+                        validator: (value)  =>
+                        value!.isEmpty ? "Informe a senha" : null,
+                        obscureText: true,
+                      ),
+                    ),
+
+                  const SizedBox(width: 16.0),
+
+                  if(_auth.isAdmin)
+                    Expanded(
+                      child:
+                        PerfilDropdown(
+                    value: _perfilSelecionado, 
+                      onChanged: (value) {
+                              setState(() {
+                                _perfilSelecionado = value;
+                              });
+                        }
+                    ),
                   ),
-
-                const SizedBox(width: 16.0),
-
-                if(_auth.isAdmin)
-                  Expanded(
-                    child:
-                      PerfilDropdown(
-                  value: _perfilSelecionado, 
-                    onChanged: (value) {
-                            setState(() {
-                              _perfilSelecionado = value;
-                            });
-                      }
-                  ),
-                  ),
-            ]),
+                ]),
 
 
-              const SizedBox(height: 48.0),
-              ElevatedButton(
-                onPressed: carregando ? null : _cadastrarUsuario,
-                child: carregando
-                    ? const CircularProgressIndicator()
-                    : const Text('Cadastrar'),
-              ),
-            ],
+                const SizedBox(height: 48.0),
+                ElevatedButton(
+                  onPressed: carregando ? null : _cadastrarUsuario,
+                  child: carregando
+                      ? const CircularProgressIndicator()
+                      : const Text('Cadastrar'),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
       )
     );
   }
