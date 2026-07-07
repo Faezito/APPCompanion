@@ -1,6 +1,5 @@
 import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/screens/menus/menu_configuracoes.dart';
-import 'package:appcompanion/screens/usuario/lista_usuarios.dart';
 import 'package:appcompanion/services/auth_service.dart';
 import 'package:appcompanion/widgets/base/appbar.dart';
 import 'package:appcompanion/widgets/botoes/menu_buttons.dart';
@@ -49,6 +48,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     MenuButton(icon: Icons.gamepad, title: "Dead by Daylight", onTap: () => _configuracoes()), 
                     MenuButton(icon: Icons.catching_pokemon, title: "Pokémon Champions", onTap: () => _configuracoes()), 
+                    if(_auth.isAdmin)
                     MenuButton(icon: Icons.settings, title: "Configurações", onTap: () => _configuracoes()), 
                   ],
                 ),

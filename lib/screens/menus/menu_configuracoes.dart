@@ -23,6 +23,10 @@ class _ConfigMenuState extends State<ConfigMenu> {
 
   @override
   Widget build(BuildContext context) {
+    if(!_auth.isAdmin){
+      throw Exception("Acesso negado.");
+    }
+    
     return Scaffold(
       appBar: BaseAppBar(titulo: "Configurações"),
       body: Container(
