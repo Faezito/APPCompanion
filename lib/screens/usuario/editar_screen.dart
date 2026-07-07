@@ -38,6 +38,7 @@ class EditarUsuarioScreen extends StatefulWidget {
     Future<void> _carregarUsuario() async {
       usuario = await usuarioService.obterPorId(widget.usuarioId);
       _emailController.text = usuario.email;
+      _perfilSelecionado = usuario.perfil;
 
       setState(() {
         carregando = false;
@@ -118,6 +119,7 @@ class EditarUsuarioScreen extends StatefulWidget {
                     Expanded(
                         child: 
                           PerfilDropdown(
+                            label: "Perfil",
                             value: _perfilSelecionado, 
                               onChanged: (value) {
                                       setState(() {
