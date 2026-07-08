@@ -1,3 +1,5 @@
+import 'package:appcompanion/core/convert/datetime_ext.dart';
+
 class UsuarioResponse {
 final int id;
 final String nomeCompleto;
@@ -18,10 +20,18 @@ UsuarioResponse({
   });
 
   String get perfilTxt => switch (perfil){
-    1 => "Admin",
+    1 => "Administrador",
     5 => "Usuario",
     _ => "Desconhecido"
   };
+
+  String get genero => switch (generoTxt){
+    "M" => "Masculino",
+    "F" => "Feminino",
+    _ => "Outro/Não informado"
+  };
+
+  String get nascimento => dataNascimento.toDDMMYYYY();
 
   bool get isAdmin => perfil == 1;
 
