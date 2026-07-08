@@ -1,6 +1,7 @@
 import 'package:appcompanion/core/di/service_locator.dart';
 import 'package:appcompanion/screens/auth/login_screen.dart';
 import 'package:appcompanion/screens/menus/menu_configuracoes.dart';
+import 'package:appcompanion/screens/usuario/perfil.dart';
 import 'package:appcompanion/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +29,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onSelected: (value) async {
                   switch (value) {
                     case "perfil":
-                      // abrir perfil
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PerfilUsuarioScreen()));
                       break;
 
                     case "config":
